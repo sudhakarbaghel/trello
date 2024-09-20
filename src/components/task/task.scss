@@ -1,0 +1,47 @@
+.task_card {
+  background-color: #e0f0ff;
+  padding: 10px 8px;
+  border-radius: 4px;
+  max-width: 400px;
+  margin-bottom: 20px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  
+  .task_title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+  
+
+  .task_description {
+    color: #555;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+
+  .task_created_at {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 15px;
+    font-weight: 500;
+  }
+
+  .task_actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+
+    .task_button {
+      border-radius: 4px;
+      font-size: 12px;
+    }
+
+    .task_button:first-child {
+      background-color: #ff4d4f;
+      border-color: #ff4d4f;
+    }
+  }
+}

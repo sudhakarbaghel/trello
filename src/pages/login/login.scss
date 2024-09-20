@@ -1,0 +1,30 @@
+.login {
+  margin: auto;
+  max-width: 550px;
+  margin-top: 60px;
+  &_title {
+    font-weight: 600;
+    color: rgba(67, 113, 236, 1);
+  }
+  .login_form {
+    margin-top: 12px;
+    border: 2px solid rgba(67, 113, 236, 1);
+    padding: 30px 25px 10px 25px;
+    border-radius: 8px;
+    &_additional_options {
+      text-align: center;
+      font-weight: 500;
+    }
+    &_login {
+      font-weight: 500;
+    }
+    &_google_login {
+      margin: auto;
+      font-weight: 500;
+    }
+    &_google_container {
+      display: flex;
+      justify-content: center;
+    }
+  }
+}

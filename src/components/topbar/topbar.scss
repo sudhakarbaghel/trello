@@ -1,0 +1,23 @@
+.topbar{
+    background-color: rgba(67, 113, 236, 1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 25px;
+    &_buttons{
+        display: flex;
+        gap:10px;
+        align-items: center;
+        &_login{
+            background-color: inherit ;
+            color: white;
+            border: none;
+            font-weight: 500;
+        }
+        &_signup{
+            font-weight: 500;
+            color: rgba(67, 113, 236, 1);
+        }
+    }
+
+}
