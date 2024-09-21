@@ -30,6 +30,30 @@ interface SignupData {
 }
 
 export const signup = async (data: SignupData) => {
-  const response = await axios.post("/auth/register", data);
-  return response.data;
+  try {
+    const response = await axios.post("/auth/register", data);
+    return response.data;
+  } catch (error) {
+    console.error("Signup failed", error);
+    throw error;
+  }
+};
+export const user = async () => {
+  try {
+    const response = await axios("/users/profile");
+    return response.data;
+  } catch (error) {
+    console.error("Signup failed", error);
+    throw error;
+  }
+};
+
+export const logout = async () => {
+  try {
+    await axios.post("/auth/logout");  
+    localStorage.removeItem("authToken"); 
+  } catch (error) {
+    console.error("Logout failed", error);
+    throw error;
+  }
 };

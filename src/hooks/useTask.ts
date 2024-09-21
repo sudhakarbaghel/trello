@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createTask, updateTask, deleteTask, fetchTasks } from "../api/task";
 import { useNavigate } from "react-router-dom";
 
@@ -8,12 +8,13 @@ interface CreateTaskPayload {
   dueDate: string;
 }
 
-interface UpdateTaskPayload extends CreateTaskPayload {
+interface UpdateTaskPayload {
   id: string;
+  status?: string;
 }
 
 export const useTask = () => {
-  const navigate = useNavigate();
+  const queryClient = useQueryClient(); 
 
   const { data: tasks, isLoading: isFetchingTasks, error: fetchError } = useQuery({
     queryKey: ["tasks"],
@@ -24,6 +25,7 @@ export const useTask = () => {
     mutationFn: (taskData: CreateTaskPayload) => createTask(taskData),
     onSuccess: (data) => {
       console.log("Task created successfully:", data);
+      queryClient.invalidateQueries({queryKey:["tasks"]});  
     },
     onError: (error: any) => {
       console.error("Failed to create task:", error);
@@ -31,9 +33,10 @@ export const useTask = () => {
   });
 
   const updateMutation = useMutation({
-    mutationFn: (taskData: UpdateTaskPayload) => updateTask(taskData),
+    mutationFn: (taskData: any) => updateTask(taskData),
     onSuccess: (data) => {
       console.log("Task updated successfully:", data);
+      queryClient.invalidateQueries({queryKey:["tasks"]});  
     },
     onError: (error: any) => {
       console.error("Failed to update task:", error);
@@ -44,6 +47,7 @@ export const useTask = () => {
     mutationFn: (id: string) => deleteTask(id),
     onSuccess: (data) => {
       console.log("Task deleted successfully:", data);
+      queryClient.invalidateQueries({queryKey:["tasks"]});  
     },
     onError: (error: any) => {
       console.error("Failed to delete task:", error);
@@ -51,12 +55,15 @@ export const useTask = () => {
   });
 
   return {
-    tasks, 
-    isFetchingTasks, 
-    fetchError, 
-    createTask: createMutation.mutate,
-    updateTask: updateMutation.mutate,
-    deleteTask: deleteMutation.mutate,
+    tasks,
+    isFetchingTasks,
+    fetchError,
+    createTask: createMutation.mutateAsync,
+    createTaskIsPending: createMutation.isPending,
+    updateTask: updateMutation.mutateAsync,
+    updateTaskIsPending: updateMutation.isPending,
+    deleteTask: deleteMutation.mutateAsync,
+    deleteTaskIsPending: deleteMutation.isPending,
     createTaskStatus: createMutation.status,
     updateTaskStatus: updateMutation.status,
     deleteTaskStatus: deleteMutation.status,

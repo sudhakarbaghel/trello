@@ -6,11 +6,13 @@ const { Option } = Select;
 interface FilterProps {
   onSearch: (searchTerm: string) => void;
   onSort: (sortOption: string) => void;
+  setSearchText:any
 }
 
-const Filter: React.FC<FilterProps> = ({ onSearch, onSort }) => {
+const Filter: React.FC<FilterProps> = ({ onSearch, onSort ,setSearchText}) => {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     onSearch(e.target.value);
+    setSearchText(e.target.value)
   };
 
   const handleSortChange = (value: string) => {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Modal, Button, Form, Input, DatePicker } from "antd";
 import { useTask } from "../../hooks/useTask";
 import dayjs from "dayjs";
@@ -8,7 +8,7 @@ interface Task {
   title: string;
   description: string;
   createdAt: string;
-  dueDate: string; // Due date stored as a string
+  dueDate: string; 
 }
 
 interface TaskModalProps {
@@ -25,14 +25,14 @@ const TaskModal: React.FC<TaskModalProps> = ({
   initialValues,
 }) => {
   const [form] = Form.useForm();
-  const { createTask, updateTask } = useTask();
+  const { createTask, updateTask, createTaskIsPending,updateTaskIsPending } = useTask();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (scenario === "Edit" && initialValues) {
       form.setFieldsValue({
         title: initialValues.title,
         description: initialValues.description,
-        dueDate: initialValues.dueDate ? dayjs(initialValues.dueDate) : null,  
+        dueDate: initialValues.dueDate ? dayjs(initialValues.dueDate) : null,
       });
     } else {
       form.resetFields();
@@ -50,17 +50,19 @@ const TaskModal: React.FC<TaskModalProps> = ({
       id: initialValues?._id,
       title,
       description: description || "",
-      dueDate: dueDate ? dayjs(dueDate).format("YYYY-MM-DD") : "",  
+      dueDate: dueDate ? dayjs(dueDate).format("YYYY-MM-DD") : "",
     };
 
     if (scenario === "Add") {
-      createTask(newTask);
+      await createTask(newTask);
     } else {
-      updateTask(newTask as any);
+      await updateTask(newTask as any);
     }
 
-    form.resetFields();
-    onClose();
+    if (!createTaskIsPending) {
+      form.resetFields();
+      onClose();
+    }
   };
 
   return (
@@ -96,12 +98,24 @@ const TaskModal: React.FC<TaskModalProps> = ({
               >
                 Cancel
               </Button>
-              <Button type="primary" htmlType="submit" style={{ width: "48%" }}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                style={{ width: "48%" }}
+                loading={updateTaskIsPending}
+                disabled={updateTaskIsPending}
+              >
                 Save Changes
               </Button>
             </>
           ) : (
-            <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              style={{ width: "100%" }}
+              loading={createTaskIsPending}
+              disabled={createTaskIsPending}
+            >
               Add Task
             </Button>
           )}

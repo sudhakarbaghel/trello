@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { Button } from "antd";
+import { Button, Popconfirm } from "antd";
 import { Draggable } from "react-beautiful-dnd";
 import TaskModal from "../../components/addTask/AddTask";
+import TaskDetailsModal from "../../components/taskDetails/TaskDetails";  
+import { useTask } from "../../hooks/useTask";
 import "./task.scss";
 
 interface TaskProps {
@@ -19,6 +21,8 @@ const Task: React.FC<TaskProps> = ({ item, index }) => {
   const { _id, title, description, createdAt, dueDate } = item;
 
   const [isModalVisible, setModalVisible] = useState(false);
+  const [isDetailsModalVisible, setDetailsModalVisible] = useState(false); 
+  const { deleteTask, deleteTaskIsPending } = useTask();
 
   const handleEdit = () => {
     setModalVisible(true);
@@ -26,6 +30,18 @@ const Task: React.FC<TaskProps> = ({ item, index }) => {
 
   const handleClose = () => {
     setModalVisible(false);
+  };
+
+  const handleDelete = async () => {
+    await deleteTask(_id);
+  };
+
+  const handleViewDetails = () => {
+    setDetailsModalVisible(true);
+  };
+
+  const handleCloseDetails = () => {
+    setDetailsModalVisible(false);
   };
 
   return (
@@ -45,9 +61,20 @@ const Task: React.FC<TaskProps> = ({ item, index }) => {
             <p className="task_created_at">Created at: {createdAt}</p>
             <p className="task_created_at">Due date: {dueDate}</p>
             <div className="task_actions">
-              <Button type="primary" danger className="task_button">
-                Delete
-              </Button>
+              <Popconfirm
+                title="Are you sure to delete this task?"
+                onConfirm={handleDelete}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button
+                  type="primary"
+                  danger
+                  className="task_button"
+                >
+                  Delete
+                </Button>
+              </Popconfirm>
               <Button
                 type="default"
                 className="task_button"
@@ -55,20 +82,31 @@ const Task: React.FC<TaskProps> = ({ item, index }) => {
               >
                 Edit
               </Button>
-              <Button type="primary" className="task_button">
+              <Button
+                type="primary"
+                className="task_button"
+                onClick={handleViewDetails} // Open details modal
+              >
                 View Details
               </Button>
             </div>
           </div>
 
-          <TaskModal 
-            visible={isModalVisible} 
-            onClose={handleClose} 
+          <TaskModal
+            visible={isModalVisible}
+            onClose={handleClose}
             scenario="Edit"
             initialValues={{
               ...item,
-              dueDate: dueDate || "", 
-            }} 
+              dueDate: dueDate || "",
+            }}
+          />
+
+          {/* Details Modal */}
+          <TaskDetailsModal
+            visible={isDetailsModalVisible}
+            onClose={handleCloseDetails}
+            task={{ title, description, createdAt, dueDate }} // Pass task details
           />
         </div>
       )}

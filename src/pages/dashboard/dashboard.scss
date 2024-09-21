@@ -1,9 +1,14 @@
 .container {
   display: flex;
   overflow-y: scroll;
-  padding: 0px 40px;
 }
+.dashboard{
+  padding: 20px 40px;
 
+}
+.addButton{
+  margin-bottom: 12px;
+}
 .task-columns {
   flex: 1;
   display: flex;
