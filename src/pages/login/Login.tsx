@@ -7,10 +7,37 @@ import "./login.scss";
 
 const Login = () => {
   const { mutate: login, error, isPending } = useLogin();
+  const navigate = useNavigate();
 
   const onFinish = (values: { email: string; password: string }) => {
     login(values);
   };
+
+  const handleGoogleLogin = () => {
+    const googleOAuthURL = getGoogleOAuthURL();
+    window.location.href = googleOAuthURL;
+  };
+  console.log(process.env.REACT_APP_GOOGLE_CLIENT_ID , process.env.REACT_APP_GOOGLE_OAUTH_REDIRECT_URL)
+
+  function getGoogleOAuthURL() {
+    const rootUrl = "https://accounts.google.com/o/oauth2/v2/auth";
+
+    const options = {
+      redirect_uri: process.env.REACT_APP_GOOGLE_OAUTH_REDIRECT_URL as string,
+      client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID as string,
+      access_type: "offline",
+      response_type: "code",
+      prompt: "consent",
+      scope: [
+        "https://www.googleapis.com/auth/userinfo.profile",
+        "https://www.googleapis.com/auth/userinfo.email",
+      ].join(" "),
+    };
+
+    const qs = new URLSearchParams(options);
+
+    return `${rootUrl}?${qs.toString()}`;
+  }
 
   return (
     <div className="login">
@@ -62,6 +89,7 @@ const Login = () => {
             type="primary"
             className="login_form_google_login"
             block
+            onClick={handleGoogleLogin}
           >
             Login with Google
           </Button>
